@@ -19,6 +19,7 @@ graphModel FlowGraph {
 	
 	@style(blackCircle, "${name}")
 	node Terminal {
+		attr EString as name
 		incomingEdges (Transition[1,1])
 		outgoingEdges (Transition[1,1])
 	}
