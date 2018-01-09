@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: syntaxDiagramm
+Bundle-SymbolicName: syntaxDiagramm; singleton:=true
+Bundle-Version: 1.0.0
+Require-Bundle:  org.eclipse.emf.ecore,
+ org.eclipse.core.runtime,
+ de.jabc.cinco.meta.core.ge.style,
+ de.jabc.cinco.meta.core.mgl.model,
+ org.eclipse.jface,
+ de.jabc.cinco.meta.core.ge.style.model,
+ de.jabc.cinco.meta.plugin.generator.runtime
+Export-Package: syntaxDiagramm.action,
+ syntaxDiagramm.codegen
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
