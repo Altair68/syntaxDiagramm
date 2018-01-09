@@ -26,16 +26,19 @@ class Generate implements IGenerator<FlowGraph> {
 		val zustand = generateZustand();
 		val start = generateStart();
 		val end = generateEnd();
+		val main = generateMain(model);
 		
 		val transitionTargetFile = ResourcesPlugin.workspace.root.getFileForLocation(targetDir.append("Transition.java"))
 		val zustandTargetFile = ResourcesPlugin.workspace.root.getFileForLocation(targetDir.append("Zustand.java"))
 		val startTargetFile = ResourcesPlugin.workspace.root.getFileForLocation(targetDir.append("Start.java"))
 		val endTargetFile = ResourcesPlugin.workspace.root.getFileForLocation(targetDir.append("End.java"))
+		val mainTargetFile = ResourcesPlugin.workspace.root.getFileForLocation(targetDir.append("Main.java"))
 
 		EclipseFileUtils.writeToFile(transitionTargetFile, transition)
 		EclipseFileUtils.writeToFile(zustandTargetFile, zustand)
 		EclipseFileUtils.writeToFile(startTargetFile, start)
 		EclipseFileUtils.writeToFile(endTargetFile, end)
+		EclipseFileUtils.writeToFile(mainTargetFile, main)
 
 	}
 	
@@ -89,7 +92,7 @@ class Generate implements IGenerator<FlowGraph> {
 	public class Start extends Zustand {
 	
 		Start() {
-			this("Z0");
+			super("Z0");
 		}
 	}
 	'''
@@ -100,10 +103,39 @@ class Generate implements IGenerator<FlowGraph> {
 	public class End extends Zustand {
 	
 		End() {
-			this("E99999");
+			super("E99999");
 		}
 	}
 	'''
 
+private def generateMain(FlowGraph model)'''
+	import java.util.Vector;
+
+	public class Main {
+		public static void main(String[] args) {
+			Vector<Zustand> zustaende = new Vector<>();
+			«FOR Start : model.starts»
+				zustaende.add(new Startzustand("«Start.id»"));
+			«ENDFOR»
+			
+«««			«FOR Terminal : model.terminals»
+«««				zustaende.add(new Endzustand("«Terminal.id»"));
+«««			«ENDFOR»
+«««			
+«««			«FOR Variable : model.variables»
+«««				zustaende.add(new Endzustand("«Variable.id»"));
+«««			«ENDFOR»
+			
+			«FOR End : model.ends»
+				zustaende.add(new Endzustand("«End.id»"));
+			«ENDFOR»
+			
+			Vector<Transition> transitions = new Vector<>();
+			«FOR Transition : model.transitions»
+				transitions.add(new Transition("«Transition.id»"));
+			«ENDFOR»
+		}
+	}
+'''
 }
 	

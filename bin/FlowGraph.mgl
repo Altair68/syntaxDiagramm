@@ -8,7 +8,6 @@ graphModel FlowGraph {
 	
 	attr EString as modelName
 	
-	// use the "blueTextRectangle" as style and pass the attribute "text" as parameter
 	@style(blackRectangle, "${name}")
 	node Variable {		
 		attr EString as name
