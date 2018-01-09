@@ -7,6 +7,7 @@ graphModel FlowGraph {
 	diagramExtension "flowgraph"
 	
 	attr EString as modelName
+	attr EString as functionName
 	
 	@style(blackRectangle, "${name}")
 	node Variable {		

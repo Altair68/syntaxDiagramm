@@ -7,6 +7,14 @@ import org.eclipse.core.runtime.IPath
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.resources.ResourcesPlugin
 import de.jabc.cinco.meta.core.utils.EclipseFileUtils
+import syntaxDiagramm.flowgraph.Transition
+import graphmodel.Edge
+import syntaxDiagramm.flowgraph.Variable
+import graphmodel.Node
+import syntaxDiagramm.flowgraph.Terminal
+import syntaxDiagramm.flowgraph.Branch
+import syntaxDiagramm.flowgraph.Start
+import syntaxDiagramm.flowgraph.End
 
 /**
  *  Example class that generates code for a given FlowGraph model. As different
@@ -22,120 +30,68 @@ class Generate implements IGenerator<FlowGraph> {
 		if (model.modelName.nullOrEmpty)
 			throw new RuntimeException("Model's name must be set.")
 
-		val transition = generateTransition();
-		val zustand = generateZustand();
-		val start = generateStart();
-		val end = generateEnd();
 		val main = generateMain(model);
 		
-		val transitionTargetFile = ResourcesPlugin.workspace.root.getFileForLocation(targetDir.append("Transition.java"))
-		val zustandTargetFile = ResourcesPlugin.workspace.root.getFileForLocation(targetDir.append("Zustand.java"))
-		val startTargetFile = ResourcesPlugin.workspace.root.getFileForLocation(targetDir.append("Start.java"))
-		val endTargetFile = ResourcesPlugin.workspace.root.getFileForLocation(targetDir.append("End.java"))
 		val mainTargetFile = ResourcesPlugin.workspace.root.getFileForLocation(targetDir.append("Main.java"))
 
-		EclipseFileUtils.writeToFile(transitionTargetFile, transition)
-		EclipseFileUtils.writeToFile(zustandTargetFile, zustand)
-		EclipseFileUtils.writeToFile(startTargetFile, start)
-		EclipseFileUtils.writeToFile(endTargetFile, end)
 		EclipseFileUtils.writeToFile(mainTargetFile, main)
 
 	}
-	
-	private def generateTransition()'''
-		public class Transition {
-			
-			private Zustand Ziel;
-			
-			Transition(Zustand aZiel) {
-				ziel = aZiel;
-			}
-			
-			public Zustand getZiel() {
-				return ziel;
-			} 
-		}
-	'''
-	
-	private def generateZustand()'''
-	import java.util.Vector;
-	
-	public class Zustand {
-		private String name;
-		private Vector<Transition> transitions;
-		
-		Zustand(String aName) {
-			name = aName;
-		}
-		
-		public String getName() {
-			return name;
-		}
-		
-		public void setName(String aName) {
-			name = aName;
-		}
-		
-		public Vector<Transition> getTransitions() {
-			return transitions;
-		}
-		
-		public void setTransitions(Vector<Transition> someTransitions) {
-			transitions = someTransitions;
-		}
-	}
-	'''
-	
-	private def generateStart()'''
-	import java.util.Vector;
-	
-	public class Start extends Zustand {
-	
-		Start() {
-			super("Z0");
-		}
-	}
-	'''
-	
-	private def generateEnd()'''
-	import java.util.Vector;
-	
-	public class End extends Zustand {
-	
-		End() {
-			super("E99999");
-		}
-	}
-	'''
 
 private def generateMain(FlowGraph model)'''
-	import java.util.Vector;
-
-	public class Main {
-		public static void main(String[] args) {
-			Vector<Zustand> zustaende = new Vector<>();
-			«FOR Start : model.starts»
-				zustaende.add(new Startzustand("«Start.id»"));
-			«ENDFOR»
-			
-«««			«FOR Terminal : model.terminals»
-«««				zustaende.add(new Endzustand("«Terminal.id»"));
-«««			«ENDFOR»
-«««			
-«««			«FOR Variable : model.variables»
-«««				zustaende.add(new Endzustand("«Variable.id»"));
-«««			«ENDFOR»
-			
-			«FOR End : model.ends»
-				zustaende.add(new Endzustand("«End.id»"));
-			«ENDFOR»
-			
-			Vector<Transition> transitions = new Vector<>();
-			«FOR Transition : model.transitions»
-				transitions.add(new Transition("«Transition.id»"));
-			«ENDFOR»
+	PARSER_BEGIN(«model.modelName»)
+	
+	public class «model.modelName» {
+		public static void main(String[] args) throws ParseException {
+			«model.modelName» parser = new «model.modelName»(System.in);
+			try {
+				System.out.println("Eingabe: ");
+				parser.«model.functionName»();
+			} catch (Exception e) {
+				System.err.println(e);
+			}
 		}
 	}
+	
+	PARSER_END(«model.modelName»)
+	
+	void «model.functionName»():
+	{}
+	{
+		«generateNode(model, model.starts.get(0))»
+	}
+'''
+
+private def generateNode(FlowGraph model, Node aNode)'''
+
+	«IF aNode instanceof Start»
+		«FOR Trans : aNode.outgoing»
+			«generateNode(model, Trans.targetElement)»
+		«ENDFOR»
+	«ENDIF»
+	
+	«IF aNode instanceof End»
+		
+	«ENDIF»
+	
+	«IF aNode instanceof Terminal»
+		«aNode.name»
+		«FOR Trans : aNode.outgoing»
+			«generateNode(model, Trans.targetElement)»
+		«ENDFOR»
+	«ENDIF»
+	
+	«IF aNode instanceof Variable»
+		
+	«ENDIF»
+	
+	«IF aNode instanceof Branch»
+		«FOR Trans : aNode.outgoing»
+			[
+			«generateNode(model, Trans.targetElement)»
+			]
+		«ENDFOR»
+	«ENDIF»
 '''
 }
 	
