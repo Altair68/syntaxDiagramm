@@ -1,49 +1,60 @@
 appearance default {
 	lineWidth 2
-	background (144,207,238)
+	background (0,0,0)
+	foreground (0,0,0)
 }
 
-appearance redBorder extends default {
-			foreground (164,29,29)
-			background (255,255,255)
-} 
-
-nodeStyle redCircle {
-	ellipse {
-		appearance redBorder
-		size(36,36)
-		ellipse { 
-			appearance redBorder
-			position ( CENTER, MIDDLE )
-			size (24,24)
-		}
-	}
-}
-
-nodeStyle greenCircle {
+nodeStyle blackCircle (1) {
 	ellipse {
 		appearance extends default {
-			foreground (81,156,88)
+			foreground (0,0,0)
 			background (255,255,255)
-		} 
-		size(36,36)
-	}
-}
-
-nodeStyle blueTextRectangle(1) {
-	roundedRectangle {
-		appearance default
-		position (0,0)
-		size (96,32)
-		corner (8,8)
+		}
+		size(50,50)
 		text {
-			position ( CENTER, MIDDLE )
-			value "%s" 
+			position (CENTER, MIDDLE)
+			value "%s"
 		}
 	}
 }
 
+nodeStyle startArrow (0) {
+	polygon {
+		appearance default
+		points [(0,0) (0,20) (5,10) (5,20) (10,10) (5,0) (5,10) ]
+	}
+}
 
+nodeStyle endArrow (0) {
+	polygon {
+		appearance default
+		points [(0,0) (10,20) (10,0) (0,20)]
+	}
+}
+
+nodeStyle blackDiamond {
+	polygon {
+		appearance extends default {
+			foreground (0,0,0)
+			background (0,0,0)
+		}
+		points [(10, 0) (20, 10) (10, 20) (0, 10)]
+	}
+}
+
+nodeStyle blackRectangle (1) {
+	rectangle {
+		appearance extends default {
+			foreground (0,0,0)
+			background (255,255,255)
+		}
+		size(100,50)
+		text {
+			position (CENTER, MIDDLE)
+			value "%s"
+		}
+	}
+}
 
 edgeStyle simpleArrow {	
 	appearance default
@@ -52,21 +63,5 @@ edgeStyle simpleArrow {
 		location (1.0) // at the end of the edge
 		ARROW
 		appearance default 
-	}
-}
-
-edgeStyle labeledArrow(1) {	
-	appearance default
-	decorator {
-		location (1.0)
-		ARROW
-		appearance default
-	}
-	decorator {
-		location (0.3)
-		movable
-		text {
-			value "%s"
-		}
 	}
 }
