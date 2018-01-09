@@ -22,21 +22,87 @@ class Generate implements IGenerator<FlowGraph> {
 		if (model.modelName.nullOrEmpty)
 			throw new RuntimeException("Model's name must be set.")
 
-		val code = generateCode(model);
-		val targetFile = ResourcesPlugin.workspace.root.getFileForLocation(targetDir.append(model.modelName + ".txt"))
+		val transition = generateTransition();
+		val zustand = generateZustand();
+		val start = generateStart();
+		val end = generateEnd();
+		
+		val transitionTargetFile = ResourcesPlugin.workspace.root.getFileForLocation(targetDir.append("Transition.java"))
+		val zustandTargetFile = ResourcesPlugin.workspace.root.getFileForLocation(targetDir.append("Zustand.java"))
+		val startTargetFile = ResourcesPlugin.workspace.root.getFileForLocation(targetDir.append("Start.java"))
+		val endTargetFile = ResourcesPlugin.workspace.root.getFileForLocation(targetDir.append("End.java"))
 
-		EclipseFileUtils.writeToFile(targetFile, code)
+		EclipseFileUtils.writeToFile(transitionTargetFile, transition)
+		EclipseFileUtils.writeToFile(zustandTargetFile, zustand)
+		EclipseFileUtils.writeToFile(startTargetFile, start)
+		EclipseFileUtils.writeToFile(endTargetFile, end)
 
 	}
-
-	private def generateCode(FlowGraph model) '''
-		=== «model.modelName» ===
+	
+	private def generateTransition()'''
+		public class Transition {
+			
+			private Zustand Ziel;
+			
+			Transition(Zustand aZiel) {
+				ziel = aZiel;
+			}
+			
+			public Zustand getZiel() {
+				return ziel;
+			} 
+		}
+	'''
+	
+	private def generateZustand()'''
+	import java.util.Vector;
+	
+	public class Zustand {
+		private String name;
+		private Vector<Transition> transitions;
 		
-		The model contains «model.allNodes.size» nodes. Here's some general information about them:
+		Zustand(String aName) {
+			name = aName;
+		}
 		
-		«FOR node : model.allNodes»
-			* node «node.id» of type '«node.eClass.name»' with «node.successors.size» successors and «node.predecessors.size» predecessors
-		«ENDFOR»
+		public String getName() {
+			return name;
+		}
+		
+		public void setName(String aName) {
+			name = aName;
+		}
+		
+		public Vector<Transition> getTransitions() {
+			return transitions;
+		}
+		
+		public void setTransitions(Vector<Transition> someTransitions) {
+			transitions = someTransitions;
+		}
+	}
+	'''
+	
+	private def generateStart()'''
+	import java.util.Vector;
+	
+	public class Start extends Zustand {
+	
+		Start() {
+			this("Z0");
+		}
+	}
+	'''
+	
+	private def generateEnd()'''
+	import java.util.Vector;
+	
+	public class End extends Zustand {
+	
+		End() {
+			this("E99999");
+		}
+	}
 	'''
 
 }
