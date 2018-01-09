@@ -13,10 +13,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
-import syntaxDiagramm.flowgraph.Branch;
 import syntaxDiagramm.flowgraph.End;
 import syntaxDiagramm.flowgraph.FlowGraph;
 import syntaxDiagramm.flowgraph.Start;
+import syntaxDiagramm.flowgraph.StartBranch;
 import syntaxDiagramm.flowgraph.Terminal;
 import syntaxDiagramm.flowgraph.Variable;
 
@@ -121,7 +121,6 @@ public class Generate implements IGenerator<FlowGraph> {
   
   private CharSequence generateNode(final FlowGraph model, final Node aNode) {
     StringConcatenation _builder = new StringConcatenation();
-    _builder.newLine();
     {
       if ((aNode instanceof Start)) {
         {
@@ -135,18 +134,16 @@ public class Generate implements IGenerator<FlowGraph> {
         }
       }
     }
-    _builder.newLine();
     {
       if ((aNode instanceof End)) {
-        _builder.append("\t");
-        _builder.newLine();
       }
     }
-    _builder.newLine();
     {
       if ((aNode instanceof Terminal)) {
+        _builder.append("\"");
         String _name = ((Terminal)aNode).getName();
         _builder.append(_name, "");
+        _builder.append("\"");
         _builder.newLineIfNotEmpty();
         {
           EList<Edge> _outgoing_1 = ((Terminal)aNode).getOutgoing();
@@ -159,29 +156,40 @@ public class Generate implements IGenerator<FlowGraph> {
         }
       }
     }
-    _builder.newLine();
     {
       if ((aNode instanceof Variable)) {
-        _builder.append("\t");
-        _builder.newLine();
-      }
-    }
-    _builder.newLine();
-    {
-      if ((aNode instanceof Branch)) {
+        String _functionName = model.getFunctionName();
+        _builder.append(_functionName, "");
+        _builder.append("()");
+        _builder.newLineIfNotEmpty();
         {
-          EList<Edge> _outgoing_2 = ((Branch)aNode).getOutgoing();
+          EList<Edge> _outgoing_2 = ((Variable)aNode).getOutgoing();
           for(final Edge Trans_2 : _outgoing_2) {
-            _builder.append("[");
-            _builder.newLine();
             Node _targetElement_2 = Trans_2.getTargetElement();
             Object _generateNode_2 = this.generateNode(model, _targetElement_2);
             _builder.append(_generateNode_2, "");
             _builder.newLineIfNotEmpty();
-            _builder.append("]");
-            _builder.newLine();
           }
         }
+      }
+    }
+    {
+      if ((aNode instanceof StartBranch)) {
+        _builder.append("[");
+        {
+          EList<Edge> _outgoing_3 = ((StartBranch)aNode).getOutgoing();
+          for(final Edge Trans_3 : _outgoing_3) {
+            _builder.newLineIfNotEmpty();
+            Node _targetElement_3 = Trans_3.getTargetElement();
+            Object _generateNode_3 = this.generateNode(model, _targetElement_3);
+            _builder.append(_generateNode_3, "");
+            _builder.append(" |");
+            _builder.newLineIfNotEmpty();
+            _builder.append("\t\t");
+          }
+        }
+        _builder.append("]");
+        _builder.newLineIfNotEmpty();
       }
     }
     return _builder;

@@ -12,9 +12,9 @@ import graphmodel.Edge
 import syntaxDiagramm.flowgraph.Variable
 import graphmodel.Node
 import syntaxDiagramm.flowgraph.Terminal
-import syntaxDiagramm.flowgraph.Branch
 import syntaxDiagramm.flowgraph.Start
 import syntaxDiagramm.flowgraph.End
+import syntaxDiagramm.flowgraph.StartBranch
 
 /**
  *  Example class that generates code for a given FlowGraph model. As different
@@ -63,34 +63,29 @@ private def generateMain(FlowGraph model)'''
 '''
 
 private def generateNode(FlowGraph model, Node aNode)'''
-
 	«IF aNode instanceof Start»
 		«FOR Trans : aNode.outgoing»
 			«generateNode(model, Trans.targetElement)»
 		«ENDFOR»
 	«ENDIF»
-	
 	«IF aNode instanceof End»
-		
 	«ENDIF»
-	
 	«IF aNode instanceof Terminal»
-		«aNode.name»
+		"«aNode.name»"
 		«FOR Trans : aNode.outgoing»
 			«generateNode(model, Trans.targetElement)»
 		«ENDFOR»
 	«ENDIF»
-	
 	«IF aNode instanceof Variable»
-		
-	«ENDIF»
-	
-	«IF aNode instanceof Branch»
+		«model.functionName»()
 		«FOR Trans : aNode.outgoing»
-			[
 			«generateNode(model, Trans.targetElement)»
-			]
 		«ENDFOR»
+	«ENDIF»
+	«IF aNode instanceof StartBranch»
+		[«FOR Trans : aNode.outgoing»
+			«generateNode(model, Trans.targetElement)» |
+		«ENDFOR»]
 	«ENDIF»
 '''
 }

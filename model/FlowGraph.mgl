@@ -25,11 +25,17 @@ graphModel FlowGraph {
 	}
 	
 	@style(blackDiamond)
-	node Branch {
-		incomingEdges (Transition[1,*])
+	node StartBranch {
+		incomingEdges (Transition[1,1])
 		outgoingEdges (Transition[1,*])
 	}
 	
+		
+	@style(blackDiamond)
+	node EndBranch {
+		incomingEdges (Transition[1,*])
+		outgoingEdges (Transition[1,1])
+	}
 		
 	@style(startArrow)
 	node Start {
