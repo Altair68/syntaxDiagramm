@@ -1,6 +1,7 @@
 	
 @style("model/FlowGraph.style")
 @generatable("syntaxDiagramm.codegen.Generate","/src-gen/")
+@contextMenuAction("syntaxDiagramm.action.Check")
 graphModel FlowGraph {
 	package syntaxDiagramm
 	nsURI "http://cinco.scce.info/product/flowgraph"
