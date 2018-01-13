@@ -13,15 +13,15 @@ graphModel FlowGraph {
 	node Variable {		
 		attr EString as name
 		attr EString as description
-		incomingEdges (Transition[1,1])
-		outgoingEdges (Transition[1,1])
+		incomingEdges (Transition[1,*])
+		outgoingEdges (Transition[1,*])
 	}
 	
 	@style(blackCircle, "${name}")
 	node Terminal {
 		attr EString as name
-		incomingEdges (Transition[1,1])
-		outgoingEdges (Transition[1,1])
+		incomingEdges (Transition[1,*])
+		outgoingEdges (Transition[1,*])
 	}
 	
 	@style(blackDiamond)
