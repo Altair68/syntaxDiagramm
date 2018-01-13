@@ -32,7 +32,7 @@ class Generate implements IGenerator<FlowGraph> {
 
 		val main = generateMain(model);
 		
-		val mainTargetFile = ResourcesPlugin.workspace.root.getFileForLocation(targetDir.append("Main.java"))
+		val mainTargetFile = ResourcesPlugin.workspace.root.getFileForLocation(targetDir.append(model.modelName + ".jj"));
 
 		EclipseFileUtils.writeToFile(mainTargetFile, main)
 
@@ -77,7 +77,7 @@ private def generateNode(FlowGraph model, Node aNode)'''
 		«ENDFOR»
 	«ENDIF»
 	«IF aNode instanceof Variable»
-		«model.functionName»()
+		«aNode.name»()
 		«FOR Trans : aNode.outgoing»
 			«generateNode(model, Trans.targetElement)»
 		«ENDFOR»
@@ -89,4 +89,4 @@ private def generateNode(FlowGraph model, Node aNode)'''
 	«ENDIF»
 '''
 }
-	
+

@@ -37,7 +37,9 @@ public class Generate implements IGenerator<FlowGraph> {
     final CharSequence main = this.generateMain(model);
     IWorkspace _workspace = ResourcesPlugin.getWorkspace();
     IWorkspaceRoot _root = _workspace.getRoot();
-    IPath _append = targetDir.append("Main.java");
+    String _modelName_1 = model.getModelName();
+    String _plus = (_modelName_1 + ".jj");
+    IPath _append = targetDir.append(_plus);
     final IFile mainTargetFile = _root.getFileForLocation(_append);
     EclipseFileUtils.writeToFile(mainTargetFile, main);
   }
@@ -158,8 +160,8 @@ public class Generate implements IGenerator<FlowGraph> {
     }
     {
       if ((aNode instanceof Variable)) {
-        String _functionName = model.getFunctionName();
-        _builder.append(_functionName, "");
+        String _name_1 = ((Variable)aNode).getName();
+        _builder.append(_name_1, "");
         _builder.append("()");
         _builder.newLineIfNotEmpty();
         {

@@ -49,7 +49,9 @@ Require-Bundle: org.eclipse.emf.ecore;visibility:=reexport,syntaxDiagr
  de.jabc.cinco.meta.plugin.generator.runtime,de.jabc.cinco.meta.plugin
  .generator.runtime,de.jabc.cinco.meta.plugin.generator.runtime,de.jab
  c.cinco.meta.plugin.generator.runtime,de.jabc.cinco.meta.plugin.gener
- ator.runtime,de.jabc.cinco.meta.plugin.generator.runtime
+ ator.runtime,de.jabc.cinco.meta.plugin.generator.runtime,de.jabc.cinc
+ o.meta.plugin.generator.runtime,de.jabc.cinco.meta.plugin.generator.r
+ untime
 Bundle-ActivationPolicy: lazy
 Bundle-ManifestVersion: 2
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
