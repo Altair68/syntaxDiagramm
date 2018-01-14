@@ -10,10 +10,12 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
 import syntaxDiagramm.flowgraph.End;
+import syntaxDiagramm.flowgraph.EndBranch;
 import syntaxDiagramm.flowgraph.FlowGraph;
 import syntaxDiagramm.flowgraph.Start;
 import syntaxDiagramm.flowgraph.StartBranch;
@@ -42,6 +44,17 @@ public class Generate implements IGenerator<FlowGraph> {
     IPath _append = targetDir.append(_plus);
     final IFile mainTargetFile = _root.getFileForLocation(_append);
     EclipseFileUtils.writeToFile(mainTargetFile, main);
+  }
+  
+  public EList<Edge> removeEndBranch(final EList<Edge> cltn) {
+    EList<Edge> test = new BasicEList<Edge>();
+    for (final Edge t : cltn) {
+      Node _targetElement = t.getTargetElement();
+      if ((!(_targetElement instanceof EndBranch))) {
+        test.add(t);
+      }
+    }
+    return test;
   }
   
   private CharSequence generateMain(final FlowGraph model) {
@@ -100,6 +113,21 @@ public class Generate implements IGenerator<FlowGraph> {
     _builder.append(_modelName_4, "");
     _builder.append(")");
     _builder.newLineIfNotEmpty();
+    _builder.newLine();
+    _builder.append("SKIP :");
+    _builder.newLine();
+    _builder.append("{");
+    _builder.newLine();
+    _builder.append("\" \"");
+    _builder.newLine();
+    _builder.append("| \"\\t\"");
+    _builder.newLine();
+    _builder.append("| \"\\n\"");
+    _builder.newLine();
+    _builder.append("| \"\\r\"");
+    _builder.newLine();
+    _builder.append("}");
+    _builder.newLine();
     _builder.newLine();
     _builder.append("void ");
     String _functionName_1 = model.getFunctionName();
@@ -172,11 +200,12 @@ public class Generate implements IGenerator<FlowGraph> {
     }
     {
       if ((aNode instanceof StartBranch)) {
-        _builder.append("[");
+        _builder.append("[ ");
         {
           EList<Edge> _outgoing_3 = ((StartBranch)aNode).getOutgoing();
+          EList<Edge> _removeEndBranch = this.removeEndBranch(_outgoing_3);
           boolean _hasElements = false;
-          for(final Edge Trans_3 : _outgoing_3) {
+          for(final Edge Trans_3 : _removeEndBranch) {
             if (!_hasElements) {
               _hasElements = true;
             } else {

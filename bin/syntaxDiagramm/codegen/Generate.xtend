@@ -15,6 +15,12 @@ import syntaxDiagramm.flowgraph.Terminal
 import syntaxDiagramm.flowgraph.Start
 import syntaxDiagramm.flowgraph.End
 import syntaxDiagramm.flowgraph.StartBranch
+import syntaxDiagramm.flowgraph.EndBranch
+import java.util.stream.Collectors
+import java.util.function.Predicate
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.EList;
+import java.util.List
 
 /**
  *  Example class that generates code for a given FlowGraph model. As different
@@ -37,7 +43,18 @@ class Generate implements IGenerator<FlowGraph> {
 		EclipseFileUtils.writeToFile(mainTargetFile, main)
 
 	}
-
+	
+def EList<Edge> removeEndBranch(EList<Edge> cltn) {
+	var EList<Edge> test = new BasicEList<Edge>();
+	for (t : cltn) {
+		if (!(t.targetElement instanceof EndBranch)) {
+			test.add(t);
+		}
+	}
+	return test;
+}
+	
+	
 private def generateMain(FlowGraph model)'''
 	PARSER_BEGIN(«model.modelName»)
 	
@@ -54,6 +71,14 @@ private def generateMain(FlowGraph model)'''
 	}
 	
 	PARSER_END(«model.modelName»)
+	
+	SKIP :
+{
+" "
+| "\t"
+| "\n"
+| "\r"
+}
 	
 	void «model.functionName»():
 	{}
@@ -82,8 +107,8 @@ private def generateNode(FlowGraph model, Node aNode)'''«
 			generateNode(model, Trans.targetElement)»«
 		ENDFOR»«
 	ENDIF»«
-	IF aNode instanceof StartBranch»[«
-		FOR Trans : aNode.outgoing SEPARATOR ' | '»«
+	IF aNode instanceof StartBranch»[ «
+		FOR Trans : removeEndBranch(aNode.outgoing) SEPARATOR ' | '»«
 			generateNode(model, Trans.targetElement)»«
 		ENDFOR»]«
 	ENDIF»'''
