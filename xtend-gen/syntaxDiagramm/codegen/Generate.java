@@ -175,11 +175,16 @@ public class Generate implements IGenerator<FlowGraph> {
         _builder.append("[");
         {
           EList<Edge> _outgoing_3 = ((StartBranch)aNode).getOutgoing();
+          boolean _hasElements = false;
           for(final Edge Trans_3 : _outgoing_3) {
+            if (!_hasElements) {
+              _hasElements = true;
+            } else {
+              _builder.appendImmediate(" | ", "");
+            }
             Node _targetElement_3 = Trans_3.getTargetElement();
             Object _generateNode_3 = this.generateNode(model, _targetElement_3);
             _builder.append(_generateNode_3, "");
-            _builder.append(" | ");
           }
         }
         _builder.append("]");

@@ -83,8 +83,8 @@ private def generateNode(FlowGraph model, Node aNode)'''«
 		ENDFOR»«
 	ENDIF»«
 	IF aNode instanceof StartBranch»[«
-		FOR Trans : aNode.outgoing»«
-			generateNode(model, Trans.targetElement)» | «
+		FOR Trans : aNode.outgoing SEPARATOR ' | '»«
+			generateNode(model, Trans.targetElement)»«
 		ENDFOR»]«
 	ENDIF»'''
 }
