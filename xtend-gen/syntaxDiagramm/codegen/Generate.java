@@ -131,7 +131,6 @@ public class Generate implements IGenerator<FlowGraph> {
             Node _targetElement = Trans.getTargetElement();
             Object _generateNode = this.generateNode(model, _targetElement);
             _builder.append(_generateNode, "");
-            _builder.newLineIfNotEmpty();
           }
         }
       }
@@ -145,15 +144,13 @@ public class Generate implements IGenerator<FlowGraph> {
         _builder.append("\"");
         String _name = ((Terminal)aNode).getName();
         _builder.append(_name, "");
-        _builder.append("\"");
-        _builder.newLineIfNotEmpty();
+        _builder.append("\" ");
         {
           EList<Edge> _outgoing_1 = ((Terminal)aNode).getOutgoing();
           for(final Edge Trans_1 : _outgoing_1) {
             Node _targetElement_1 = Trans_1.getTargetElement();
             Object _generateNode_1 = this.generateNode(model, _targetElement_1);
             _builder.append(_generateNode_1, "");
-            _builder.newLineIfNotEmpty();
           }
         }
       }
@@ -162,15 +159,13 @@ public class Generate implements IGenerator<FlowGraph> {
       if ((aNode instanceof Variable)) {
         String _name_1 = ((Variable)aNode).getName();
         _builder.append(_name_1, "");
-        _builder.append("()");
-        _builder.newLineIfNotEmpty();
+        _builder.append("() ");
         {
           EList<Edge> _outgoing_2 = ((Variable)aNode).getOutgoing();
           for(final Edge Trans_2 : _outgoing_2) {
             Node _targetElement_2 = Trans_2.getTargetElement();
             Object _generateNode_2 = this.generateNode(model, _targetElement_2);
             _builder.append(_generateNode_2, "");
-            _builder.newLineIfNotEmpty();
           }
         }
       }
@@ -181,17 +176,13 @@ public class Generate implements IGenerator<FlowGraph> {
         {
           EList<Edge> _outgoing_3 = ((StartBranch)aNode).getOutgoing();
           for(final Edge Trans_3 : _outgoing_3) {
-            _builder.newLineIfNotEmpty();
             Node _targetElement_3 = Trans_3.getTargetElement();
             Object _generateNode_3 = this.generateNode(model, _targetElement_3);
             _builder.append(_generateNode_3, "");
-            _builder.append(" |");
-            _builder.newLineIfNotEmpty();
-            _builder.append("\t\t");
+            _builder.append(" | ");
           }
         }
         _builder.append("]");
-        _builder.newLineIfNotEmpty();
       }
     }
     return _builder;

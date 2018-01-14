@@ -62,31 +62,30 @@ private def generateMain(FlowGraph model)'''
 	}
 '''
 
-private def generateNode(FlowGraph model, Node aNode)'''
-	«IF aNode instanceof Start»
-		«FOR Trans : aNode.outgoing»
-			«generateNode(model, Trans.targetElement)»
-		«ENDFOR»
-	«ENDIF»
-	«IF aNode instanceof End»
-	«ENDIF»
-	«IF aNode instanceof Terminal»
-		"«aNode.name»"
-		«FOR Trans : aNode.outgoing»
-			«generateNode(model, Trans.targetElement)»
-		«ENDFOR»
-	«ENDIF»
-	«IF aNode instanceof Variable»
-		«aNode.name»()
-		«FOR Trans : aNode.outgoing»
-			«generateNode(model, Trans.targetElement)»
-		«ENDFOR»
-	«ENDIF»
-	«IF aNode instanceof StartBranch»
-		[«FOR Trans : aNode.outgoing»
-			«generateNode(model, Trans.targetElement)» |
-		«ENDFOR»]
-	«ENDIF»
-'''
+private def generateNode(FlowGraph model, Node aNode)'''«
+	IF aNode instanceof Start»«
+		FOR Trans : aNode.outgoing»«
+			generateNode(model, Trans.targetElement)»«
+		ENDFOR»«
+	ENDIF»«
+	IF aNode instanceof End»«
+	ENDIF»«
+	IF aNode instanceof Terminal»"«
+		aNode.name»" «
+		FOR Trans : aNode.outgoing»«
+			generateNode(model, Trans.targetElement)»«
+		ENDFOR»«
+	ENDIF»«
+	IF aNode instanceof Variable»«
+		aNode.name»() «
+		FOR Trans : aNode.outgoing»«
+			generateNode(model, Trans.targetElement)»«
+		ENDFOR»«
+	ENDIF»«
+	IF aNode instanceof StartBranch»[«
+		FOR Trans : aNode.outgoing»«
+			generateNode(model, Trans.targetElement)» | «
+		ENDFOR»]«
+	ENDIF»'''
 }
 
