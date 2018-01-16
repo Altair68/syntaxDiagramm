@@ -1,5 +1,6 @@
 package syntaxDiagramm.codegen;
 
+import com.google.common.base.Objects;
 import de.jabc.cinco.meta.core.utils.EclipseFileUtils;
 import de.jabc.cinco.meta.plugin.generator.runtime.IGenerator;
 import graphmodel.Edge;
@@ -59,6 +60,14 @@ public class Generate implements IGenerator<FlowGraph> {
   
   private CharSequence generateMain(final FlowGraph model) {
     StringConcatenation _builder = new StringConcatenation();
+    _builder.append("options {");
+    _builder.newLine();
+    _builder.append("\t");
+    _builder.append("LOOKAHEAD=100;");
+    _builder.newLine();
+    _builder.append("}");
+    _builder.newLine();
+    _builder.newLine();
     _builder.append("PARSER_BEGIN(");
     String _modelName = model.getModelName();
     _builder.append(_modelName, "");
@@ -191,9 +200,14 @@ public class Generate implements IGenerator<FlowGraph> {
         {
           EList<Edge> _outgoing_2 = ((Variable)aNode).getOutgoing();
           for(final Edge Trans_2 : _outgoing_2) {
+            Object _xifexpression = null;
             Node _targetElement_2 = Trans_2.getTargetElement();
-            Object _generateNode_2 = this.generateNode(model, _targetElement_2);
-            _builder.append(_generateNode_2, "");
+            boolean _notEquals = (!Objects.equal(_targetElement_2, aNode));
+            if (_notEquals) {
+              Node _targetElement_3 = Trans_2.getTargetElement();
+              _xifexpression = this.generateNode(model, _targetElement_3);
+            }
+            _builder.append(_xifexpression, "");
           }
         }
       }
@@ -211,9 +225,9 @@ public class Generate implements IGenerator<FlowGraph> {
             } else {
               _builder.appendImmediate(" | ", "");
             }
-            Node _targetElement_3 = Trans_3.getTargetElement();
-            Object _generateNode_3 = this.generateNode(model, _targetElement_3);
-            _builder.append(_generateNode_3, "");
+            Node _targetElement_4 = Trans_3.getTargetElement();
+            Object _generateNode_2 = this.generateNode(model, _targetElement_4);
+            _builder.append(_generateNode_2, "");
           }
         }
         _builder.append("]");

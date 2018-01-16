@@ -56,6 +56,10 @@ def EList<Edge> removeEndBranch(EList<Edge> cltn) {
 	
 	
 private def generateMain(FlowGraph model)'''
+	options {
+		LOOKAHEAD=100;
+	}
+	
 	PARSER_BEGIN(«model.modelName»)
 	
 	public class «model.modelName» {
@@ -104,7 +108,7 @@ private def generateNode(FlowGraph model, Node aNode)'''«
 	IF aNode instanceof Variable»«
 		aNode.name»() «
 		FOR Trans : aNode.outgoing»«
-			generateNode(model, Trans.targetElement)»«
+			if(Trans.targetElement != aNode) generateNode(model, Trans.targetElement)»«
 		ENDFOR»«
 	ENDIF»«
 	IF aNode instanceof StartBranch»[ «
